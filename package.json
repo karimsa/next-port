@@ -1,0 +1,25 @@
+{
+  "name": "next-port",
+  "version": "0.0.1",
+  "description": "grab next available port for listening",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/karimsa/next-port"
+  },
+  "keywords": [
+    "tcp",
+    "port",
+    "next",
+    "available"
+  ],
+  "author": "Karim Alibhai",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/karimsa/next-port/issues"
+  },
+  "homepage": "https://github.com/karimsa/next-port"
+}
