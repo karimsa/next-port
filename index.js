@@ -43,6 +43,7 @@ module.exports = function (options, fn) {
     , port = lower - 1
     , server = net.createServer()
     , done = function () {
+        server.close()
         fn(null, port)
       }
     , next = function () {
