@@ -62,6 +62,9 @@ module.exports = function (options, fn) {
       port = lower - 1
     }
 
+    // skip
+    if (port === 0) port += 1
+
     // setup failure catching
     server.on('error', next)
 
