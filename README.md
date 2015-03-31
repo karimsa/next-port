@@ -17,5 +17,5 @@ nextPort({ /* options */ }, function (err, port) { /* ... */ })
 
 ## options
 
- - `lower`: the lower bound to start scan from. (default: 1024 if root/admin, 1 if not)
+ - `lower`: the lower bound to start scan from. (default: 1 if root/admin, 1024 if not)
  - `higher`: the higher bound to stop scan at. (default: 65535)
