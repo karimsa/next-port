@@ -1,6 +1,6 @@
 {
   "name": "next-port",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "grab next available port for listening",
   "main": "index.js",
   "scripts": {
