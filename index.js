@@ -57,7 +57,7 @@ module.exports = function (options, fn) {
 
   isAdmin(function (isadmin) {
     // check for root/admin
-    if (isadmin) {
+    if (isadmin && !options.hasOwnProperty('lower')) {
       lower = test
       port = lower - 1
     }
