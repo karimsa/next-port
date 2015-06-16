@@ -9,7 +9,7 @@ var net = require('net')
   , test = 1
   , _isAdmin = null
   , isAdmin = function (fn) {
-      if (_isAdmin !== null) return _isAdmin;
+      if (_isAdmin !== null) return fn(_isAdmin)
       var server = net.createServer()
         , done = function () {
             _isAdmin = true
