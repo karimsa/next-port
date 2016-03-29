@@ -47,7 +47,7 @@ module.exports = function (options, fn) {
   }
 
   options = options || {}
-  options.protocol = options.protocol === 'udp' ? 'udp' : 'tcp'
+  options.protocol = options.protocol.toLowerCase() === 'udp' ? 'udp' : 'tcp'
 
   if (typeof fn !== 'function') {
     fn = null
