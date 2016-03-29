@@ -1,6 +1,6 @@
 # next-port
 
-grab next available TCP port.
+grab next available port.
 
 ## usage
 
@@ -19,3 +19,4 @@ nextPort({ /* options */ }, function (err, port) { /* ... */ })
 
  - `lower`: the lower bound to start scan from. (default: 1 if root/admin, 1024 if not)
  - `higher`: the higher bound to stop scan at. (default: 65535)
+ - `protocol`: TCP or UDP.
