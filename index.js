@@ -1,16 +1,17 @@
 // index.js - next-port
-// grab next available TCP port.
+// grab next available port
 //
-// Copyright (C) 2015 Karim Alibhai.
+// Copyright (C) 2015-2016 Karim Alibhai.
 
-"use strict";
+'use strict';
 
 var net = require('net')
+  , dgram = require('dgram')
   , test = 1
   , _isAdmin = null
-  , isAdmin = function (fn) {
+  , isAdmin = function (protocol, fn) {
       if (_isAdmin !== null) return fn(_isAdmin)
-      var server = net.createServer()
+      var server = protocol === 'tcp' ? net.createServer() : dgram.createSocket('udp4')
         , done = function () {
             _isAdmin = true
             fn(true)
@@ -21,11 +22,22 @@ var net = require('net')
             fn(false)
           } else {
             test += 1
-            server.listen(test, done)
+
+            if (protocol === 'tcp') server.listen(test)
+            else server.bind(test)
           }
         }
 
-      server.listen(test, done).on('error', next)
+      server.on('error', next)
+      server.on('listening', done)
+
+      if (protocol === 'tcp') server.listen(test)
+      else {
+          server = dgram.createSocket('udp4')
+          server.on('error', next)
+          server.bind(test)
+          server.on('listening', done)
+      }
     }
 
 module.exports = function (options, fn) {
@@ -35,6 +47,7 @@ module.exports = function (options, fn) {
   }
 
   options = options || {}
+  options.protocol = options.protocol === 'udp' ? 'udp' : 'tcp'
 
   if (typeof fn !== 'function') {
     fn = null
@@ -44,7 +57,7 @@ module.exports = function (options, fn) {
     var lower = options.lower || 1024
       , higher = options.higher || 65535
       , port = lower - 1
-      , server = net.createServer()
+      , server = options.protocol === 'tcp' ? net.createServer() : dgram.createSocket('udp4')
       , done = function () {
           server.close()
           resolve(port)
@@ -52,31 +65,39 @@ module.exports = function (options, fn) {
       , next = function () {
           if (port <= higher) {
             port += 1
-            server.listen(port)
+
+            if (options.protocol === 'tcp') server.listen(port)
+            else {
+                server = dgram.createSocket('udp4')
+                server.on('error', next)
+                server.on('listening', done)
+                server.bind(port)
+            }
           } else {
             reject(new Error('no available ports.'))
           }
         }
 
-      isAdmin(function (isadmin) {
-      // check for root/admin
-      if (isadmin && !options.hasOwnProperty('lower')) {
-        lower = test
-        port = lower - 1
-      }
-
-      // skip
-      if (port === 0) port += 1
-
-      // setup failure catching
-      server.on('error', next)
-
-      // setup success catching
-      server.on('listening', done)
-
-      // try listening, otherwise fail
-      server.listen(port)
-    })
+      isAdmin(options.protocol, function (isadmin) {
+        // check for root/admin
+        if (isadmin && !options.hasOwnProperty('lower')) {
+          lower = test
+          port = lower - 1
+        }
+    
+        // skip 
+        if (port === 0) port += 1
+    
+        // setup failure catchi ng
+        server.on('error', next )
+    
+        // setup success catchin
+        server.on('listening', done )
+    
+        // try listening, otherwise fail
+        if (options.protocol === 'tcp') server.listen(port)
+        else server.bind(port)
+      })
   });
 
   // allow asynchronous callbacks instead of promises
